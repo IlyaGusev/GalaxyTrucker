@@ -32,7 +32,11 @@ namespace GalaxyTruckerClient
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnGetSegment = new System.Windows.Forms.Button();
             this.queuePictureBox = new System.Windows.Forms.PictureBox();
+            this.storePictureBox1 = new System.Windows.Forms.PictureBox();
+            this.storePictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.queuePictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.storePictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.storePictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -49,7 +53,7 @@ namespace GalaxyTruckerClient
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(22, 23);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
@@ -84,12 +88,34 @@ namespace GalaxyTruckerClient
             this.queuePictureBox.TabIndex = 2;
             this.queuePictureBox.TabStop = false;
             // 
+            // storePictureBox1
+            // 
+            this.storePictureBox1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.storePictureBox1.InitialImage = null;
+            this.storePictureBox1.Location = new System.Drawing.Point(22, 439);
+            this.storePictureBox1.Name = "storePictureBox1";
+            this.storePictureBox1.Size = new System.Drawing.Size(50, 50);
+            this.storePictureBox1.TabIndex = 3;
+            this.storePictureBox1.TabStop = false;
+            // 
+            // storePictureBox2
+            // 
+            this.storePictureBox2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.storePictureBox2.InitialImage = null;
+            this.storePictureBox2.Location = new System.Drawing.Point(78, 439);
+            this.storePictureBox2.Name = "storePictureBox2";
+            this.storePictureBox2.Size = new System.Drawing.Size(50, 50);
+            this.storePictureBox2.TabIndex = 4;
+            this.storePictureBox2.TabStop = false;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1109, 538);
+            this.Controls.Add(this.storePictureBox2);
+            this.Controls.Add(this.storePictureBox1);
             this.Controls.Add(this.queuePictureBox);
             this.Controls.Add(this.btnGetSegment);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -98,6 +124,8 @@ namespace GalaxyTruckerClient
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainWindow_DragEnter);
             ((System.ComponentModel.ISupportInitialize)(this.queuePictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.storePictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.storePictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -107,6 +135,8 @@ namespace GalaxyTruckerClient
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button btnGetSegment;
         private System.Windows.Forms.PictureBox queuePictureBox;
+        private System.Windows.Forms.PictureBox storePictureBox1;
+        private System.Windows.Forms.PictureBox storePictureBox2;
     }
 }
 

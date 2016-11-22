@@ -53,6 +53,47 @@ namespace GalaxyTruckerClient
             Image = (System.Drawing.Bitmap)Properties.Resources.ResourceManager.GetObject( st );
         }
 
+        public Tuple<TSocket, TSocket> CalculateSockets( SpaceshipSegment other, TDirection direction )
+        {
+            TSocket socket1 = this.SocketUp;
+            TSocket socket2 = other.SocketDown;
+            if( direction == TDirection.Right ) {
+                socket1 = this.SocketRight;
+                socket2 = other.SocketLeft;
+            }
+            if( direction == TDirection.Down ) {
+                socket1 = this.SocketDown;
+                socket2 = other.SocketUp;
+            }
+            if( direction == TDirection.Left ) {
+                socket1 = this.SocketLeft;
+                socket2 = other.SocketRight;
+            }
+            return new Tuple<TSocket, TSocket>( socket1, socket2 );
+        }
+
+        public bool CanPlace( SpaceshipSegment other, TDirection direction )
+        {
+            Tuple<TSocket, TSocket> sockets = CalculateSockets( other, direction );
+            TSocket socket1 = sockets.Item1;
+            TSocket socket2 = sockets.Item2;
+
+            return ( socket1 == socket2 ||
+                     ( socket2 == SpaceshipSegment.TSocket.Universal && socket1 != SpaceshipSegment.TSocket.No ) ||
+                     ( socket1 == SpaceshipSegment.TSocket.Universal && socket2 != SpaceshipSegment.TSocket.No ) );
+        }
+
+        public bool CanConnect( SpaceshipSegment other, TDirection direction )
+        {
+            Tuple<TSocket, TSocket> sockets = CalculateSockets( other, direction );
+            TSocket socket1 = sockets.Item1;
+            TSocket socket2 = sockets.Item2;
+
+            return CanPlace( other, direction ) &&
+                socket1 != SpaceshipSegment.TSocket.No &&
+                socket2 != SpaceshipSegment.TSocket.No;
+        }
+
         public TType Type { get; set; }
         public TDirection MainDirection { get; set; }
         public TSocket SocketUp { get; set; }

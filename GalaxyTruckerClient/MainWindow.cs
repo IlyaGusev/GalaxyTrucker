@@ -18,6 +18,7 @@ namespace GalaxyTruckerClient
             InitializeComponent();
 
             Ship = new Spaceship( 1 );
+            StoreSegments = new SpaceshipSegment[2];
             foreach( Tuple<int, int> coord in Ship.ValidCells ) {
                 PictureBox pictureBox = new PictureBox();
                 pictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -36,9 +37,14 @@ namespace GalaxyTruckerClient
             Queue = new SpaceshipConstructionQueue(new List<SpaceshipSegment>{
                 new SpaceshipSegment("Blaster0001000"), new SpaceshipSegment("Cabin0323220"),
                 new SpaceshipSegment("Engine2300000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Hold0000220")} );
+                new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
+                new SpaceshipSegment("Blaster0001000")} );
 
             queuePictureBox.MouseDown += queuePictureBox_MouseDown;
+            storePictureBox1.DragEnter += storePictureBox_DragEnter;
+            storePictureBox2.DragEnter += storePictureBox_DragEnter;
+            storePictureBox1.DragDrop += storePictureBox_DragDrop;
+            storePictureBox2.DragDrop += storePictureBox_DragDrop;
         }
 
         private void MainWindow_Load( object sender, EventArgs e )
@@ -66,25 +72,53 @@ namespace GalaxyTruckerClient
 
         private void MainWindow_DragEnter( object sender, DragEventArgs e )
         {
-            e.Effect = DragDropEffects.Move;
+            e.Effect = DragDropEffects.None;
         }
 
-        void pictureBox_DragEnter( object sender, DragEventArgs e )
+        private void pictureBox_DragEnter( object sender, DragEventArgs e )
         {
-            if( e.Data.GetDataPresent( DataFormats.Bitmap ) )
+            PictureBox pictureBox = (PictureBox)sender;
+            TableLayoutPanelCellPosition pos = tableLayoutPanel1.GetCellPosition( pictureBox );
+            if( e.Data.GetDataPresent( DataFormats.Bitmap ) && 
+                Ship.CanAddSegment( CurrentSegment, pos.Row, pos.Column ) ) {
                 e.Effect = DragDropEffects.Move;
+            } else {
+                e.Effect = DragDropEffects.None;
+            }
         }
 
-        void pictureBox_DragDrop( object sender, DragEventArgs e )
+        private void pictureBox_DragDrop( object sender, DragEventArgs e )
         {
             var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
             PictureBox pictureBox = (PictureBox)sender;
             TableLayoutPanelCellPosition pos = tableLayoutPanel1.GetCellPosition( pictureBox );
+            Ship.AddSegment( CurrentSegment, pos.Row, pos.Column );
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox.Image = bmp;
+        }
+
+        private void storePictureBox_DragEnter( object sender, DragEventArgs e )
+        {
+            PictureBox pictureBox = (PictureBox)sender;
+            if( e.Data.GetDataPresent( DataFormats.Bitmap ) && pictureBox.Image == null &&
+                ( StoreSegments[0] == null || StoreSegments[1] == null ) ) 
+            {
+                e.Effect = DragDropEffects.Move;
+            } else {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void storePictureBox_DragDrop( object sender, DragEventArgs e )
+        {
+            var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
+            PictureBox pictureBox = (PictureBox)sender;
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox.Image = bmp;
         }
 
         SpaceshipSegment CurrentSegment { get; set; }
+        SpaceshipSegment[] StoreSegments { get; set; }
         Spaceship Ship { get; set; }
         SpaceshipConstructionQueue Queue{ get; set; }
     }

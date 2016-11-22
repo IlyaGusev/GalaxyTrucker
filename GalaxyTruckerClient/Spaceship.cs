@@ -16,8 +16,6 @@ namespace GalaxyTruckerClient
 
     class Spaceship
     {
-        public List<Tuple<int, int>> ValidCells { get; set; }
-        public Tuple<int, int> MainCabinPosition { get; set; }
         public Spaceship( int number )
         {
             if( number == 1 ) {
@@ -35,7 +33,49 @@ namespace GalaxyTruckerClient
             }
         }
 
-        public SpaceshipSegment[, ] Matrix { get; set; }
+        public bool CanAddSegment( SpaceshipSegment segment, int row, int col )
+        {
+            // Рядом с существующими сегментами
+            if( Matrix[row - 1, col] == null && Matrix[row, col - 1] == null && 
+                Matrix[row + 1, col] == null && Matrix[row, col + 1] == null ) 
+            {
+                return false;
+            }
+            // Нет противоречий
+            if( ( row - 1 >= 0 && Matrix[row - 1, col] != null &&
+                !Matrix[row - 1, col].CanPlace( segment, SpaceshipSegment.TDirection.Down ) ) ||
+                ( col - 1 >= 0 && Matrix[row, col - 1] != null &&
+                !Matrix[row, col - 1].CanPlace( segment, SpaceshipSegment.TDirection.Right ) ) ||
+                ( row + 1 < Matrix.GetLength( 0 ) && Matrix[row + 1, col] != null ) &&
+                !Matrix[row + 1, col].CanPlace( segment, SpaceshipSegment.TDirection.Up ) ||
+                ( col + 1 < Matrix.GetLength( 1 ) && Matrix[row, col + 1] != null ) &&
+                !Matrix[row, col + 1].CanPlace( segment, SpaceshipSegment.TDirection.Left ) ) 
+            {
+                return false;
+            }
+            // Есть связь
+            if( ( row - 1 >= 0 && Matrix[row - 1, col] != null &&
+                Matrix[row - 1, col].CanConnect( segment, SpaceshipSegment.TDirection.Down ) ) ||
+                ( col - 1 >= 0 && Matrix[row, col - 1] != null &&
+                Matrix[row, col - 1].CanConnect( segment, SpaceshipSegment.TDirection.Right ) ) ||
+                ( row + 1 < Matrix.GetLength( 0 ) && Matrix[row + 1, col] != null ) &&
+                Matrix[row + 1, col].CanConnect( segment, SpaceshipSegment.TDirection.Up ) ||
+                ( col + 1 < Matrix.GetLength( 1 ) && Matrix[row, col + 1] != null ) &&
+                Matrix[row, col + 1].CanConnect( segment, SpaceshipSegment.TDirection.Left ) ) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddSegment( SpaceshipSegment segment, int row, int col )
+        {
+            if( !CanAddSegment(segment, row, col) ) {
+                return false;
+            }
+            Matrix[row, col] = segment;
+            return true;
+        }
 
         public void Fill()
         {
@@ -117,5 +157,8 @@ namespace GalaxyTruckerClient
             return result;
         }
 
+        public SpaceshipSegment[,] Matrix { get; set; }
+        public List<Tuple<int, int>> ValidCells { get; set; }
+        public Tuple<int, int> MainCabinPosition { get; set; }
     }
 }

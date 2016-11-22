@@ -12,8 +12,6 @@ namespace GalaxyTruckerClient
         {
             ClosedQueueOfSegments = _closedQueueOfSegments;
         }
-        public List<SpaceshipSegment> ClosedQueueOfSegments;
-        public List<SpaceshipSegment> OpenedSegments;
 
         public SpaceshipSegment Get()
         {
@@ -23,9 +21,13 @@ namespace GalaxyTruckerClient
             ClosedQueueOfSegments.RemoveAt( 0 );
             return res;
         }
+
         public int Count()
         {
             return ClosedQueueOfSegments.Count;
         }
+
+        public List<SpaceshipSegment> ClosedQueueOfSegments;
+        public List<SpaceshipSegment> OpenedSegments;
     }
 }
