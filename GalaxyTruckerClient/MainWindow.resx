@@ -117,29 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Blaster0001000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\blasterDown2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Cabin0323220" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cabinUp3Down3Left2Right2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Cabin0333321" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\main.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Engine2020000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\engineRight2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Engine2100000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\engineUp1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Engine2200000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\engineUp2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Engine2300000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\engineUp3.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Hold0000220" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hold2Left2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>
