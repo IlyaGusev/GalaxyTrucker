@@ -71,7 +71,7 @@ namespace GalaxyTruckerClient
 
         private void btnGetSegment_Click( object sender, EventArgs e )
         {
-            if( Queue.Count() != 0) {
+            if( Queue.Count() != 0 && queuePictureBox.Image == null ) {
                 CurrentSegment = Queue.Get();
                 queuePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 queuePictureBox.Image = CurrentSegment.Image;
@@ -174,11 +174,12 @@ namespace GalaxyTruckerClient
         {
             var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
             Queue.OpenedSegments.Add( DraggingSegment );
-            int i = (Queue.OpenedSegments.Count-1) / 12;
-            int j = (Queue.OpenedSegments.Count-1) % 12;
-            PictureBox pictureBox = (PictureBox) openPanel.GetControlFromPosition( j, i );
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Image = DraggingSegment.Image;
+            //int i = (Queue.OpenedSegments.Count-1) / 12;
+            //int j = (Queue.OpenedSegments.Count-1) % 12;
+            //PictureBox pictureBox = (PictureBox) openPanel.GetControlFromPosition( j, i );
+            //pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            //pictureBox.Image = DraggingSegment.Image;
+            RedrawOpenPanel();
         }
 
         private void openPanelPictureBox_MouseDown( object sender, MouseEventArgs e )
@@ -191,9 +192,25 @@ namespace GalaxyTruckerClient
             Queue.OpenedSegments.RemoveAt( pos.Row * 12 + pos.Column );
 
             if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
-                pictureBox.Image = null;
+                RedrawOpenPanel();
             } else {
                 Queue.OpenedSegments.Add( DraggingSegment );
+                RedrawOpenPanel();
+            }
+        }
+
+        public void RedrawOpenPanel()
+        {
+            for( int i = 0; i < openPanel.RowCount; i++ ) {
+                for( int j = 0; j < openPanel.ColumnCount; j++ ) {
+                    PictureBox pictureBox = (PictureBox)openPanel.GetControlFromPosition( j, i );
+                    int m = i * 12 + j;
+                    if( m < Queue.OpenedSegments.Count ) {
+                        pictureBox.Image = Queue.OpenedSegments[m].Image;
+                    } else {
+                        pictureBox.Image = null;
+                    }
+                }
             }
         }
 

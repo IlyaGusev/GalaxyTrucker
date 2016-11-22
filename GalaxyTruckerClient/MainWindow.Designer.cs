@@ -224,7 +224,7 @@ namespace GalaxyTruckerClient
             // storageLabel
             // 
             this.storageLabel.AutoSize = true;
-            this.storageLabel.Location = new System.Drawing.Point(600, 21);
+            this.storageLabel.Location = new System.Drawing.Point(596, 21);
             this.storageLabel.Name = "storageLabel";
             this.storageLabel.Size = new System.Drawing.Size(71, 13);
             this.storageLabel.TabIndex = 9;
