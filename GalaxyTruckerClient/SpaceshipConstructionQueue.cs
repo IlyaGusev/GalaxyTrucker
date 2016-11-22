@@ -11,6 +11,7 @@ namespace GalaxyTruckerClient
         public SpaceshipConstructionQueue( List<SpaceshipSegment> _closedQueueOfSegments )
         {
             ClosedQueueOfSegments = _closedQueueOfSegments;
+            OpenedSegments = new List<SpaceshipSegment>();
         }
 
         public SpaceshipSegment Get()

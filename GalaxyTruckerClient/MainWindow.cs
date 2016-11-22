@@ -17,6 +17,16 @@ namespace GalaxyTruckerClient
         {
             InitializeComponent();
 
+            queuePictureBox.MouseDown += queuePictureBox_MouseDown;
+            storePictureBox1.DragEnter += storePictureBox_DragEnter;
+            storePictureBox2.DragEnter += storePictureBox_DragEnter;
+            storePictureBox1.DragDrop += storePictureBox_DragDrop;
+            storePictureBox2.DragDrop += storePictureBox_DragDrop;
+            storePictureBox1.AllowDrop = true;
+            storePictureBox2.AllowDrop = true;
+            storePictureBox1.MouseDown += storePictureBox_MouseDown;
+            storePictureBox2.MouseDown += storePictureBox_MouseDown;
+
             Ship = new Spaceship( 1 );
             StoreSegments = new SpaceshipSegment[2];
             foreach( Tuple<int, int> coord in Ship.ValidCells ) {
@@ -40,11 +50,18 @@ namespace GalaxyTruckerClient
                 new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
                 new SpaceshipSegment("Blaster0001000")} );
 
-            queuePictureBox.MouseDown += queuePictureBox_MouseDown;
-            storePictureBox1.DragEnter += storePictureBox_DragEnter;
-            storePictureBox2.DragEnter += storePictureBox_DragEnter;
-            storePictureBox1.DragDrop += storePictureBox_DragDrop;
-            storePictureBox2.DragDrop += storePictureBox_DragDrop;
+            for( int i = 0; i < openPanel.RowCount; i++ ) {
+                for( int j = 0; j < openPanel.ColumnCount; j++ ) {
+                    PictureBox pictureBox = new PictureBox();
+                    pictureBox.BackColor = System.Drawing.SystemColors.ControlLight;
+                    openPanel.Controls.Add( pictureBox, j, i );
+                    pictureBox.Dock = DockStyle.Fill;
+                    pictureBox.Margin = new Padding( 1 );
+                    pictureBox.MouseDown += openPanelPictureBox_MouseDown;
+                }
+            }
+            openPanel.DragEnter += openPanel_DragEnter;
+            openPanel.DragDrop += openPanel_DragDrop;
         }
 
         private void MainWindow_Load( object sender, EventArgs e )
@@ -65,6 +82,7 @@ namespace GalaxyTruckerClient
         {
             var img = queuePictureBox.Image;
             if( img == null ) return;
+            DraggingSegment = CurrentSegment;
             if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
                 queuePictureBox.Image = null;
             }
@@ -80,7 +98,7 @@ namespace GalaxyTruckerClient
             PictureBox pictureBox = (PictureBox)sender;
             TableLayoutPanelCellPosition pos = tableLayoutPanel1.GetCellPosition( pictureBox );
             if( e.Data.GetDataPresent( DataFormats.Bitmap ) && 
-                Ship.CanAddSegment( CurrentSegment, pos.Row, pos.Column ) ) {
+                Ship.CanAddSegment( DraggingSegment, pos.Row, pos.Column ) ) {
                 e.Effect = DragDropEffects.Move;
             } else {
                 e.Effect = DragDropEffects.None;
@@ -92,9 +110,10 @@ namespace GalaxyTruckerClient
             var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
             PictureBox pictureBox = (PictureBox)sender;
             TableLayoutPanelCellPosition pos = tableLayoutPanel1.GetCellPosition( pictureBox );
-            Ship.AddSegment( CurrentSegment, pos.Row, pos.Column );
+            Ship.AddSegment( DraggingSegment, pos.Row, pos.Column );
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox.Image = bmp;
+            pictureBox.AllowDrop = false;
         }
 
         private void storePictureBox_DragEnter( object sender, DragEventArgs e )
@@ -115,11 +134,74 @@ namespace GalaxyTruckerClient
             PictureBox pictureBox = (PictureBox)sender;
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox.Image = bmp;
+            if( pictureBox.Name == "storePictureBox1" ) {
+                StoreSegments[0] = DraggingSegment;
+            } else {
+                StoreSegments[1] = DraggingSegment;
+            }
         }
 
+        private void storePictureBox_MouseDown( object sender, MouseEventArgs e )
+        {
+            PictureBox pictureBox = (PictureBox)sender;
+            var img = pictureBox.Image;
+            if( img == null ) return;
+            if( pictureBox.Name == "storePictureBox1" ) {
+                DraggingSegment = StoreSegments[0];
+            } else {
+                DraggingSegment = StoreSegments[1];
+            }
+            if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
+                pictureBox.Image = null;
+                if( pictureBox.Name == "storePictureBox1" ) {
+                    StoreSegments[0] = null;
+                } else {
+                    StoreSegments[1] = null;
+                }
+            }
+        }
+
+        private void openPanel_DragEnter( object sender, DragEventArgs e )
+        {
+            if( e.Data.GetDataPresent( DataFormats.Bitmap ) ) {
+                e.Effect = DragDropEffects.Move;
+            } else {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void openPanel_DragDrop( object sender, DragEventArgs e )
+        {
+            var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
+            Queue.OpenedSegments.Add( DraggingSegment );
+            int i = (Queue.OpenedSegments.Count-1) / 12;
+            int j = (Queue.OpenedSegments.Count-1) % 12;
+            PictureBox pictureBox = (PictureBox) openPanel.GetControlFromPosition( j, i );
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox.Image = DraggingSegment.Image;
+        }
+
+        private void openPanelPictureBox_MouseDown( object sender, MouseEventArgs e )
+        {
+            PictureBox pictureBox = (PictureBox)sender;
+            var img = pictureBox.Image;
+            if( img == null ) return;
+            TableLayoutPanelCellPosition pos = openPanel.GetCellPosition( pictureBox );
+            DraggingSegment = Queue.OpenedSegments[pos.Row * 12 + pos.Column];
+            Queue.OpenedSegments.RemoveAt( pos.Row * 12 + pos.Column );
+
+            if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
+                pictureBox.Image = null;
+            } else {
+                Queue.OpenedSegments.Add( DraggingSegment );
+            }
+        }
+
+        SpaceshipSegment DraggingSegment { get; set; }
         SpaceshipSegment CurrentSegment { get; set; }
         SpaceshipSegment[] StoreSegments { get; set; }
         Spaceship Ship { get; set; }
         SpaceshipConstructionQueue Queue{ get; set; }
+
     }
 }
