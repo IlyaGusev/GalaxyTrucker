@@ -36,17 +36,24 @@ namespace GalaxyTruckerClient
             this.storePictureBox2 = new System.Windows.Forms.PictureBox();
             this.openPanel = new System.Windows.Forms.TableLayoutPanel();
             this.statGroupBox = new System.Windows.Forms.GroupBox();
+            this.energyLabel = new System.Windows.Forms.Label();
+            this.crewLabel = new System.Windows.Forms.Label();
             this.weaponLabel = new System.Windows.Forms.Label();
             this.engineLabel = new System.Windows.Forms.Label();
-            this.crewLabel = new System.Windows.Forms.Label();
-            this.energyLabel = new System.Windows.Forms.Label();
             this.bufferLabel = new System.Windows.Forms.Label();
             this.starshipLabel = new System.Windows.Forms.Label();
             this.storageLabel = new System.Windows.Forms.Label();
+            this.constructorPanel = new System.Windows.Forms.Panel();
+            this.menuPanel = new System.Windows.Forms.Panel();
+            this.exitButton = new System.Windows.Forms.Button();
+            this.configureButton = new System.Windows.Forms.Button();
+            this.startButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.queuePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.storePictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.storePictureBox2)).BeginInit();
             this.statGroupBox.SuspendLayout();
+            this.constructorPanel.SuspendLayout();
+            this.menuPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -63,8 +70,8 @@ namespace GalaxyTruckerClient
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(43, 40);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(39, 25);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
@@ -80,7 +87,7 @@ namespace GalaxyTruckerClient
             // 
             // btnGetSegment
             // 
-            this.btnGetSegment.Location = new System.Drawing.Point(421, 427);
+            this.btnGetSegment.Location = new System.Drawing.Point(418, 408);
             this.btnGetSegment.Name = "btnGetSegment";
             this.btnGetSegment.Size = new System.Drawing.Size(92, 23);
             this.btnGetSegment.TabIndex = 1;
@@ -92,7 +99,7 @@ namespace GalaxyTruckerClient
             // 
             this.queuePictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
             this.queuePictureBox.InitialImage = null;
-            this.queuePictureBox.Location = new System.Drawing.Point(442, 456);
+            this.queuePictureBox.Location = new System.Drawing.Point(440, 437);
             this.queuePictureBox.Name = "queuePictureBox";
             this.queuePictureBox.Size = new System.Drawing.Size(50, 50);
             this.queuePictureBox.TabIndex = 2;
@@ -102,7 +109,7 @@ namespace GalaxyTruckerClient
             // 
             this.storePictureBox1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.storePictureBox1.InitialImage = null;
-            this.storePictureBox1.Location = new System.Drawing.Point(43, 456);
+            this.storePictureBox1.Location = new System.Drawing.Point(39, 424);
             this.storePictureBox1.Name = "storePictureBox1";
             this.storePictureBox1.Size = new System.Drawing.Size(50, 50);
             this.storePictureBox1.TabIndex = 3;
@@ -112,7 +119,7 @@ namespace GalaxyTruckerClient
             // 
             this.storePictureBox2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.storePictureBox2.InitialImage = null;
-            this.storePictureBox2.Location = new System.Drawing.Point(99, 456);
+            this.storePictureBox2.Location = new System.Drawing.Point(95, 424);
             this.storePictureBox2.Name = "storePictureBox2";
             this.storePictureBox2.Size = new System.Drawing.Size(50, 50);
             this.storePictureBox2.TabIndex = 4;
@@ -135,8 +142,8 @@ namespace GalaxyTruckerClient
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.openPanel.Location = new System.Drawing.Point(590, 40);
+            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.openPanel.Location = new System.Drawing.Point(575, 25);
             this.openPanel.Name = "openPanel";
             this.openPanel.RowCount = 12;
             this.openPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
@@ -160,12 +167,30 @@ namespace GalaxyTruckerClient
             this.statGroupBox.Controls.Add(this.crewLabel);
             this.statGroupBox.Controls.Add(this.weaponLabel);
             this.statGroupBox.Controls.Add(this.engineLabel);
-            this.statGroupBox.Location = new System.Drawing.Point(190, 427);
+            this.statGroupBox.Location = new System.Drawing.Point(185, 408);
             this.statGroupBox.Name = "statGroupBox";
             this.statGroupBox.Size = new System.Drawing.Size(200, 79);
             this.statGroupBox.TabIndex = 6;
             this.statGroupBox.TabStop = false;
             this.statGroupBox.Text = "Starship Stats";
+            // 
+            // energyLabel
+            // 
+            this.energyLabel.AutoSize = true;
+            this.energyLabel.Location = new System.Drawing.Point(7, 59);
+            this.energyLabel.Name = "energyLabel";
+            this.energyLabel.Size = new System.Drawing.Size(52, 13);
+            this.energyLabel.TabIndex = 3;
+            this.energyLabel.Text = "Enegry: 0";
+            // 
+            // crewLabel
+            // 
+            this.crewLabel.AutoSize = true;
+            this.crewLabel.Location = new System.Drawing.Point(7, 46);
+            this.crewLabel.Name = "crewLabel";
+            this.crewLabel.Size = new System.Drawing.Size(79, 13);
+            this.crewLabel.TabIndex = 2;
+            this.crewLabel.Text = "Human crew: 0";
             // 
             // weaponLabel
             // 
@@ -185,28 +210,10 @@ namespace GalaxyTruckerClient
             this.engineLabel.TabIndex = 0;
             this.engineLabel.Text = "Engine power: 0";
             // 
-            // crewLabel
-            // 
-            this.crewLabel.AutoSize = true;
-            this.crewLabel.Location = new System.Drawing.Point(7, 46);
-            this.crewLabel.Name = "crewLabel";
-            this.crewLabel.Size = new System.Drawing.Size(79, 13);
-            this.crewLabel.TabIndex = 2;
-            this.crewLabel.Text = "Human crew: 0";
-            // 
-            // energyLabel
-            // 
-            this.energyLabel.AutoSize = true;
-            this.energyLabel.Location = new System.Drawing.Point(7, 59);
-            this.energyLabel.Name = "energyLabel";
-            this.energyLabel.Size = new System.Drawing.Size(52, 13);
-            this.energyLabel.TabIndex = 3;
-            this.energyLabel.Text = "Enegry: 0";
-            // 
             // bufferLabel
             // 
             this.bufferLabel.AutoSize = true;
-            this.bufferLabel.Location = new System.Drawing.Point(43, 436);
+            this.bufferLabel.Location = new System.Drawing.Point(45, 408);
             this.bufferLabel.Name = "bufferLabel";
             this.bufferLabel.Size = new System.Drawing.Size(64, 13);
             this.bufferLabel.TabIndex = 7;
@@ -215,7 +222,7 @@ namespace GalaxyTruckerClient
             // starshipLabel
             // 
             this.starshipLabel.AutoSize = true;
-            this.starshipLabel.Location = new System.Drawing.Point(46, 21);
+            this.starshipLabel.Location = new System.Drawing.Point(45, 9);
             this.starshipLabel.Name = "starshipLabel";
             this.starshipLabel.Size = new System.Drawing.Size(45, 13);
             this.starshipLabel.TabIndex = 8;
@@ -224,11 +231,68 @@ namespace GalaxyTruckerClient
             // storageLabel
             // 
             this.storageLabel.AutoSize = true;
-            this.storageLabel.Location = new System.Drawing.Point(596, 21);
+            this.storageLabel.Location = new System.Drawing.Point(584, 9);
             this.storageLabel.Name = "storageLabel";
             this.storageLabel.Size = new System.Drawing.Size(71, 13);
             this.storageLabel.TabIndex = 9;
             this.storageLabel.Text = "Open storage";
+            // 
+            // constructorPanel
+            // 
+            this.constructorPanel.Controls.Add(this.tableLayoutPanel1);
+            this.constructorPanel.Controls.Add(this.storageLabel);
+            this.constructorPanel.Controls.Add(this.bufferLabel);
+            this.constructorPanel.Controls.Add(this.queuePictureBox);
+            this.constructorPanel.Controls.Add(this.openPanel);
+            this.constructorPanel.Controls.Add(this.statGroupBox);
+            this.constructorPanel.Controls.Add(this.starshipLabel);
+            this.constructorPanel.Controls.Add(this.btnGetSegment);
+            this.constructorPanel.Controls.Add(this.storePictureBox2);
+            this.constructorPanel.Controls.Add(this.storePictureBox1);
+            this.constructorPanel.Location = new System.Drawing.Point(12, 12);
+            this.constructorPanel.Name = "constructorPanel";
+            this.constructorPanel.Size = new System.Drawing.Size(1240, 777);
+            this.constructorPanel.TabIndex = 10;
+            this.constructorPanel.Visible = false;
+            // 
+            // menuPanel
+            // 
+            this.menuPanel.Controls.Add(this.exitButton);
+            this.menuPanel.Controls.Add(this.configureButton);
+            this.menuPanel.Controls.Add(this.startButton);
+            this.menuPanel.Location = new System.Drawing.Point(400, 200);
+            this.menuPanel.Name = "menuPanel";
+            this.menuPanel.Size = new System.Drawing.Size(480, 340);
+            this.menuPanel.TabIndex = 10;
+            // 
+            // exitButton
+            // 
+            this.exitButton.Location = new System.Drawing.Point(65, 217);
+            this.exitButton.Name = "exitButton";
+            this.exitButton.Size = new System.Drawing.Size(350, 50);
+            this.exitButton.TabIndex = 2;
+            this.exitButton.Text = "Exit";
+            this.exitButton.UseVisualStyleBackColor = true;
+            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
+            // 
+            // configureButton
+            // 
+            this.configureButton.Location = new System.Drawing.Point(65, 133);
+            this.configureButton.Name = "configureButton";
+            this.configureButton.Size = new System.Drawing.Size(350, 50);
+            this.configureButton.TabIndex = 1;
+            this.configureButton.Text = "Configure";
+            this.configureButton.UseVisualStyleBackColor = true;
+            // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(65, 50);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(350, 50);
+            this.startButton.TabIndex = 0;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // MainWindow
             // 
@@ -236,16 +300,8 @@ namespace GalaxyTruckerClient
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 801);
-            this.Controls.Add(this.storageLabel);
-            this.Controls.Add(this.starshipLabel);
-            this.Controls.Add(this.bufferLabel);
-            this.Controls.Add(this.statGroupBox);
-            this.Controls.Add(this.openPanel);
-            this.Controls.Add(this.storePictureBox2);
-            this.Controls.Add(this.storePictureBox1);
-            this.Controls.Add(this.queuePictureBox);
-            this.Controls.Add(this.btnGetSegment);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.menuPanel);
+            this.Controls.Add(this.constructorPanel);
             this.Name = "MainWindow";
             this.Text = "Galaxy Trucker";
             this.Load += new System.EventHandler(this.MainWindow_Load);
@@ -255,8 +311,10 @@ namespace GalaxyTruckerClient
             ((System.ComponentModel.ISupportInitialize)(this.storePictureBox2)).EndInit();
             this.statGroupBox.ResumeLayout(false);
             this.statGroupBox.PerformLayout();
+            this.constructorPanel.ResumeLayout(false);
+            this.constructorPanel.PerformLayout();
+            this.menuPanel.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -276,6 +334,11 @@ namespace GalaxyTruckerClient
         private System.Windows.Forms.Label bufferLabel;
         private System.Windows.Forms.Label starshipLabel;
         private System.Windows.Forms.Label storageLabel;
+        private System.Windows.Forms.Panel constructorPanel;
+        private System.Windows.Forms.Panel menuPanel;
+        private System.Windows.Forms.Button exitButton;
+        private System.Windows.Forms.Button configureButton;
+        private System.Windows.Forms.Button startButton;
     }
 }
 

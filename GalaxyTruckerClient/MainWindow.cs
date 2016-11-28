@@ -8,11 +8,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Resources;
+using System.Net.Sockets;
 
 namespace GalaxyTruckerClient
 {
     public partial class MainWindow : Form
     {
+        private void Send( TcpClient client, string str )
+        {
+            byte[] Buffer = Encoding.ASCII.GetBytes( str );
+            client.GetStream().Write( Buffer, 0, Buffer.Length );
+        }
+
+        private string Read( TcpClient client )
+        {
+            string request = "";
+            byte[] buffer = new byte[1024];
+            int count;
+            while( ( count = client.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
+                request += Encoding.ASCII.GetString( buffer, 0, count );
+                if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
+                    break;
+                }
+            }
+            return request;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -66,7 +87,15 @@ namespace GalaxyTruckerClient
 
         private void MainWindow_Load( object sender, EventArgs e )
         {
-
+            //this.queuePictureBox.Enabled = false;
+            //TcpClient client = new TcpClient( "127.0.0.1", 8000 );
+            //Send( client, "IsLobbyReady\r\n" );
+            //while( true ) {
+            //    if( Read( client ) == "Yes\r\n" ) {
+            //        this.queuePictureBox.Enabled = true;
+            //        break;
+            //    }
+            //}
         }
 
         private void btnGetSegment_Click( object sender, EventArgs e )
@@ -220,5 +249,20 @@ namespace GalaxyTruckerClient
         Spaceship Ship { get; set; }
         SpaceshipConstructionQueue Queue{ get; set; }
 
+        private void panel1_Paint( object sender, PaintEventArgs e )
+        {
+
+        }
+
+        private void startButton_Click( object sender, EventArgs e )
+        {
+            this.menuPanel.Visible = false;
+            this.constructorPanel.Visible = true;
+        }
+
+        private void exitButton_Click( object sender, EventArgs e )
+        {
+            Application.Exit();
+        }
     }
 }
