@@ -44,6 +44,9 @@ namespace GalaxyTruckerClient
             this.starshipLabel = new System.Windows.Forms.Label();
             this.storageLabel = new System.Windows.Forms.Label();
             this.constructorPanel = new System.Windows.Forms.Panel();
+            this.cardsButton3 = new System.Windows.Forms.Button();
+            this.cardsButton2 = new System.Windows.Forms.Button();
+            this.cardsButton1 = new System.Windows.Forms.Button();
             this.menuPanel = new System.Windows.Forms.Panel();
             this.exitButton = new System.Windows.Forms.Button();
             this.configureButton = new System.Windows.Forms.Button();
@@ -70,7 +73,7 @@ namespace GalaxyTruckerClient
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 76F));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(39, 25);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
@@ -142,7 +145,7 @@ namespace GalaxyTruckerClient
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
             this.openPanel.Location = new System.Drawing.Point(575, 25);
             this.openPanel.Name = "openPanel";
             this.openPanel.RowCount = 12;
@@ -239,6 +242,9 @@ namespace GalaxyTruckerClient
             // 
             // constructorPanel
             // 
+            this.constructorPanel.Controls.Add(this.cardsButton3);
+            this.constructorPanel.Controls.Add(this.cardsButton2);
+            this.constructorPanel.Controls.Add(this.cardsButton1);
             this.constructorPanel.Controls.Add(this.tableLayoutPanel1);
             this.constructorPanel.Controls.Add(this.storageLabel);
             this.constructorPanel.Controls.Add(this.bufferLabel);
@@ -254,6 +260,33 @@ namespace GalaxyTruckerClient
             this.constructorPanel.Size = new System.Drawing.Size(1240, 777);
             this.constructorPanel.TabIndex = 10;
             this.constructorPanel.Visible = false;
+            // 
+            // cardsButton3
+            // 
+            this.cardsButton3.Location = new System.Drawing.Point(370, 520);
+            this.cardsButton3.Name = "cardsButton3";
+            this.cardsButton3.Size = new System.Drawing.Size(140, 200);
+            this.cardsButton3.TabIndex = 12;
+            this.cardsButton3.Text = "Cards 3";
+            this.cardsButton3.UseVisualStyleBackColor = true;
+            // 
+            // cardsButton2
+            // 
+            this.cardsButton2.Location = new System.Drawing.Point(205, 520);
+            this.cardsButton2.Name = "cardsButton2";
+            this.cardsButton2.Size = new System.Drawing.Size(140, 200);
+            this.cardsButton2.TabIndex = 11;
+            this.cardsButton2.Text = "Cards 2";
+            this.cardsButton2.UseVisualStyleBackColor = true;
+            // 
+            // cardsButton1
+            // 
+            this.cardsButton1.Location = new System.Drawing.Point(39, 520);
+            this.cardsButton1.Name = "cardsButton1";
+            this.cardsButton1.Size = new System.Drawing.Size(140, 200);
+            this.cardsButton1.TabIndex = 10;
+            this.cardsButton1.Text = "Cards 1";
+            this.cardsButton1.UseVisualStyleBackColor = true;
             // 
             // menuPanel
             // 
@@ -339,6 +372,9 @@ namespace GalaxyTruckerClient
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.Button configureButton;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.Button cardsButton3;
+        private System.Windows.Forms.Button cardsButton2;
+        private System.Windows.Forms.Button cardsButton1;
     }
 }
 

@@ -39,6 +39,7 @@ namespace GalaxyTruckerClient
             InitializeComponent();
 
             queuePictureBox.MouseDown += queuePictureBox_MouseDown;
+
             storePictureBox1.DragEnter += storePictureBox_DragEnter;
             storePictureBox2.DragEnter += storePictureBox_DragEnter;
             storePictureBox1.DragDrop += storePictureBox_DragDrop;
@@ -47,6 +48,13 @@ namespace GalaxyTruckerClient
             storePictureBox2.AllowDrop = true;
             storePictureBox1.MouseDown += storePictureBox_MouseDown;
             storePictureBox2.MouseDown += storePictureBox_MouseDown;
+
+            openPanel.DragEnter += openPanel_DragEnter;
+            openPanel.DragDrop += openPanel_DragDrop;
+
+            cardsButton1.Click += cardsButton_Click;
+            cardsButton2.Click += cardsButton_Click;
+            cardsButton3.Click += cardsButton_Click;
 
             Ship = new Spaceship( 1 );
             StoreSegments = new SpaceshipSegment[2];
@@ -60,16 +68,11 @@ namespace GalaxyTruckerClient
                 pictureBox.DragEnter += pictureBox_DragEnter;
                 pictureBox.DragDrop += pictureBox_DragDrop;
             }
+
             PictureBox cabinControl = (PictureBox)tableLayoutPanel1.GetControlFromPosition( 
                 Ship.MainCabinPosition.Item2, Ship.MainCabinPosition.Item1 );
             cabinControl.AllowDrop = false;
             cabinControl.Image = Ship.Matrix[Ship.MainCabinPosition.Item1, Ship.MainCabinPosition.Item2].Image;
-
-            Queue = new SpaceshipConstructionQueue(new List<SpaceshipSegment>{
-                new SpaceshipSegment("Blaster0001000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Engine2300000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
-                new SpaceshipSegment("Blaster0001000")} );
 
             for( int i = 0; i < openPanel.RowCount; i++ ) {
                 for( int j = 0; j < openPanel.ColumnCount; j++ ) {
@@ -81,8 +84,16 @@ namespace GalaxyTruckerClient
                     pictureBox.MouseDown += openPanelPictureBox_MouseDown;
                 }
             }
-            openPanel.DragEnter += openPanel_DragEnter;
-            openPanel.DragDrop += openPanel_DragDrop;
+
+            Queue = new SpaceshipConstructionQueue( new List<SpaceshipSegment>{
+                new SpaceshipSegment("Blaster0001000"), new SpaceshipSegment("Cabin0323220"),
+                new SpaceshipSegment("Engine2300000"), new SpaceshipSegment("Cabin0323220"),
+                new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
+                new SpaceshipSegment("Blaster0001000")} );
+
+            Cards1 = new List<Card> { new OpenSpaceCard(), new PlanetsCard("00;01;11;2") };
+            Cards2 = new List<Card>();
+            Cards3 = new List<Card>();
         }
 
         private void MainWindow_Load( object sender, EventArgs e )
@@ -203,11 +214,6 @@ namespace GalaxyTruckerClient
         {
             var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
             Queue.OpenedSegments.Add( DraggingSegment );
-            //int i = (Queue.OpenedSegments.Count-1) / 12;
-            //int j = (Queue.OpenedSegments.Count-1) % 12;
-            //PictureBox pictureBox = (PictureBox) openPanel.GetControlFromPosition( j, i );
-            //pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            //pictureBox.Image = DraggingSegment.Image;
             RedrawOpenPanel();
         }
 
@@ -243,17 +249,6 @@ namespace GalaxyTruckerClient
             }
         }
 
-        SpaceshipSegment DraggingSegment { get; set; }
-        SpaceshipSegment CurrentSegment { get; set; }
-        SpaceshipSegment[] StoreSegments { get; set; }
-        Spaceship Ship { get; set; }
-        SpaceshipConstructionQueue Queue{ get; set; }
-
-        private void panel1_Paint( object sender, PaintEventArgs e )
-        {
-
-        }
-
         private void startButton_Click( object sender, EventArgs e )
         {
             this.menuPanel.Visible = false;
@@ -264,5 +259,27 @@ namespace GalaxyTruckerClient
         {
             Application.Exit();
         }
+
+        private void cardsButton_Click( object sender, EventArgs e )
+        {
+            Button btn = (Button)sender;
+            if( btn.Name == "cardsButton1" ) {
+                new CardsView( Cards1 ).ShowDialog();
+            } else if( btn.Name == "cardsButton2" ) {
+                new CardsView( Cards2 ).ShowDialog();
+            } else if( btn.Name == "cardsButton3" ) {
+                new CardsView( Cards3 ).ShowDialog();
+            }
+        }
+
+
+        SpaceshipSegment DraggingSegment { get; set; }
+        SpaceshipSegment CurrentSegment { get; set; }
+        SpaceshipSegment[] StoreSegments { get; set; }
+        Spaceship Ship { get; set; }
+        SpaceshipConstructionQueue Queue { get; set; }
+        List<Card> Cards1 { get; set; }
+        List<Card> Cards2 { get; set; }
+        List<Card> Cards3 { get; set; }
     }
 }

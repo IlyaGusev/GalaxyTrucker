@@ -46,6 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Card.cs" />
+    <Compile Include="CardsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CardsView.Designer.cs">
+      <DependentUpon>CardsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Player.cs" />
     <Compile Include="SpaceshipConstructionQueue.cs" />
     <Compile Include="MainWindow.cs">
@@ -58,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spaceship.cs" />
     <Compile Include="SpaceshipSegment.cs" />
+    <EmbeddedResource Include="CardsView.resx">
+      <DependentUpon>CardsView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
