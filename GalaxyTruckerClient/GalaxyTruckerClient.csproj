@@ -53,8 +53,14 @@
     <Compile Include="CardsView.Designer.cs">
       <DependentUpon>CardsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="LobbyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LobbyDialog.Designer.cs">
+      <DependentUpon>LobbyDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Player.cs" />
-    <Compile Include="SpaceshipConstructionQueue.cs" />
+    <Compile Include="ServerConnection.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,9 @@
     <Compile Include="SpaceshipSegment.cs" />
     <EmbeddedResource Include="CardsView.resx">
       <DependentUpon>CardsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LobbyDialog.resx">
+      <DependentUpon>LobbyDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

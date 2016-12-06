@@ -19,93 +19,126 @@ namespace GalaxyTruckerServer
     using System.IO;
     namespace HTTPServer
     {
-        class Client
+        class ClientInfo
         {
-            private void Send( string str )
+            public TcpClient Connection;
+            public string Name = "Player 1";
+            public ClientInfo( TcpClient _connection, string _name)
             {
-                byte[] Buffer = Encoding.ASCII.GetBytes( str );
-                connection.GetStream().Write( Buffer, 0, Buffer.Length );
+                Connection = _connection;
+                Name = _name;
             }
 
-            public Client( TcpClient _connection )
+            public bool IsConnected
             {
-                this.connection = _connection;
-            }
-
-            public void ClientLoop()
-            {
-                try {
-                    while( true ) {
-                        string request = "";
-                        byte[] buffer = new byte[1024];
-                        int count;
-                        while( ( count = connection.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
-                            request += Encoding.ASCII.GetString( buffer, 0, count );
-                            if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
-                                break;
+                get
+                {
+                    try {
+                        if( Connection != null && Connection.Client != null && Connection.Client.Connected ) {
+                            if( Connection.Client.Poll( 0, SelectMode.SelectRead ) ) {
+                                byte[] buff = new byte[1];
+                                if( Connection.Client.Receive( buff, SocketFlags.Peek ) == 0 ) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
                             }
+                            return true;
+                        } else {
+                            return false;
                         }
-                        Console.WriteLine( "[Server] Client wrote {0}", request );
-
-                        if( request == "Ready\r\n" ) {
-
-                        } else if( request == "GetSegment\r\n" ) {
-
-                        } else if( request == "GetCard\r\n" ) {
-
-                        } else if( request == "Close\r\n" ) {
-                            connection.Close();
-                        } else if( request == "IsLobbyReady\r\n" ) {
-                            if( Server.Clients.Count == 2 ) {
-                                this.Send( "Yes\r\n" );
-                            }
-                        }
+                    } catch {
+                        return false;
                     }
-                } catch(System.IO.IOException e) {
-                } finally {
-                    connection.Close();
                 }
             }
-
-            private TcpClient connection { get; set; }
-            public bool IsReady { get; set; }
         }
-
         class Server
         {
-            public Server( int Port )
+            int Port = 8000;
+            List<ClientInfo> clients = new List<ClientInfo>();
+            GameState state = new GameState();
+            public Server( int _port )
             {
-                Listener = new TcpListener( IPAddress.Any, Port );
-                Listener.Start();
+                Port = _port;
+            }
+
+            public void Start()
+            {
+                TcpListener listener = new TcpListener( IPAddress.Any, Port );
+                listener.Start();
+                int counter = 0;
                 while( true ) {
-                    ThreadPool.QueueUserWorkItem( new WaitCallback( ClientThread ), Listener.AcceptTcpClient() );
-                }
-            }
-            static void ClientThread( Object StateInfo )
-            {
-                Console.WriteLine( "Client joined" );
-                Client client = new Client( (TcpClient)StateInfo );
-                Clients.Add( client );
-                client.ClientLoop();
-            }
-            ~Server()
-            {
-                if( Listener != null ) {
-                    Listener.Stop();
+                    if( listener.Pending() ) {
+                        TcpClient client = listener.AcceptTcpClient();
+                        counter += 1;
+                        clients.Add( new ClientInfo( client, "Player " + counter.ToString() ) );
+                    }
+
+                    List<int> toBeRemoved = new List<int>();
+                    foreach( ClientInfo client in clients ) {
+                        if( !client.IsConnected ) {
+                           toBeRemoved.Add( clients.IndexOf( client ) );
+                        }
+                    }
+                    foreach( int index in toBeRemoved ) {
+                        clients.RemoveAt( index );
+                    }
+
+                    foreach( ClientInfo client in clients ) {
+                        string request = read( client.Connection );
+                        if( !request.Equals( "" ) ) {
+                            Console.WriteLine( "[Server] " + client.Name + " wrote: '{0}'", request );
+                            if( request == "IsLobbyReady\r\n" ) {
+                                if( clients.Count == 1 ) {
+                                    string answer = "Yes\r\n";
+                                    Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
+                                    send( client.Connection, answer );
+                                } else {
+                                    string answer = "No\r\n";
+                                    Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
+                                    send( client.Connection, answer );
+                                }
+                            } else if( request == "GetSegment\r\n" ) {
+                                string answer = state.Queue.Get().CustomToString() + "\r\n";
+                                Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
+                                send( client.Connection, answer );
+                            }
+                        }
+                        
+                    }
+                    Thread.Sleep( 20 );
                 }
             }
 
+            private void send( TcpClient client, string str )
+            {
+                byte[] Buffer = Encoding.ASCII.GetBytes( str );
+                client.GetStream().Write( Buffer, 0, Buffer.Length );
+            }
+
+            private string read( TcpClient client )
+            {
+                string request = "";
+                byte[] buffer = new byte[1024];
+                int count;
+                while( ( count = client.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
+                    request += Encoding.ASCII.GetString( buffer, 0, count );
+                    if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
+                        break;
+                    }
+                }
+                return request;
+            }
+
+        }
+        class Program
+        {
             static void Main( string[] args )
             {
-                int MaxThreadsCount = 5;
-                ThreadPool.SetMaxThreads( MaxThreadsCount, MaxThreadsCount );
-                ThreadPool.SetMinThreads( 2, 2 );
-                Server.Clients = new List<Client>();
-                new Server( 8000 );
+                Server server = new Server(8000);
+                server.Start();
             }
-
-            TcpListener Listener;
-            public static List<Client> Clients;
         }
     }
 

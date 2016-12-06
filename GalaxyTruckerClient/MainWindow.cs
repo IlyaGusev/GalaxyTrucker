@@ -9,30 +9,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Resources;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace GalaxyTruckerClient
 {
     public partial class MainWindow : Form
     {
-        private void Send( TcpClient client, string str )
-        {
-            byte[] Buffer = Encoding.ASCII.GetBytes( str );
-            client.GetStream().Write( Buffer, 0, Buffer.Length );
-        }
-
-        private string Read( TcpClient client )
-        {
-            string request = "";
-            byte[] buffer = new byte[1024];
-            int count;
-            while( ( count = client.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
-                request += Encoding.ASCII.GetString( buffer, 0, count );
-                if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
-                    break;
-                }
-            }
-            return request;
-        }
+        SpaceshipSegment DraggingSegment { get; set; }
+        SpaceshipSegment CurrentSegment { get; set; }
+        SpaceshipSegment[] StoreSegments { get; set; }
+        Spaceship Ship { get; set; }
+        List<Card> Cards1 { get; set; }
+        List<Card> Cards2 { get; set; }
+        List<Card> Cards3 { get; set; }
+        ServerConnection connection { get; set; }
 
         public MainWindow()
         {
@@ -85,36 +75,18 @@ namespace GalaxyTruckerClient
                 }
             }
 
-            Queue = new SpaceshipConstructionQueue( new List<SpaceshipSegment>{
-                new SpaceshipSegment("Blaster0001000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Engine2300000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
-                new SpaceshipSegment("Blaster0001000")} );
-
             Cards1 = new List<Card> { new OpenSpaceCard(), new PlanetsCard("00;01;11;2") };
             Cards2 = new List<Card>();
             Cards3 = new List<Card>();
         }
 
-        private void MainWindow_Load( object sender, EventArgs e )
-        {
-            //this.queuePictureBox.Enabled = false;
-            //TcpClient client = new TcpClient( "127.0.0.1", 8000 );
-            //Send( client, "IsLobbyReady\r\n" );
-            //while( true ) {
-            //    if( Read( client ) == "Yes\r\n" ) {
-            //        this.queuePictureBox.Enabled = true;
-            //        break;
-            //    }
-            //}
-        }
-
         private void btnGetSegment_Click( object sender, EventArgs e )
         {
-            if( Queue.Count() != 0 && queuePictureBox.Image == null ) {
-                CurrentSegment = Queue.Get();
-                queuePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                queuePictureBox.Image = CurrentSegment.Image;
+            if( queuePictureBox.Image == null ) {
+                string elem = connection.GetSegment();
+                //CurrentSegment = connection.GetSegment();
+                //queuePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                //queuePictureBox.Image = CurrentSegment.Image;
             } 
         }
 
@@ -212,47 +184,59 @@ namespace GalaxyTruckerClient
 
         private void openPanel_DragDrop( object sender, DragEventArgs e )
         {
-            var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
-            Queue.OpenedSegments.Add( DraggingSegment );
-            RedrawOpenPanel();
+            //var bmp = (Bitmap)e.Data.GetData( DataFormats.Bitmap );
+            //Queue.OpenedSegments.Add( DraggingSegment );
+            //redrawOpenPanel();
         }
 
         private void openPanelPictureBox_MouseDown( object sender, MouseEventArgs e )
         {
-            PictureBox pictureBox = (PictureBox)sender;
-            var img = pictureBox.Image;
-            if( img == null ) return;
-            TableLayoutPanelCellPosition pos = openPanel.GetCellPosition( pictureBox );
-            DraggingSegment = Queue.OpenedSegments[pos.Row * 12 + pos.Column];
-            Queue.OpenedSegments.RemoveAt( pos.Row * 12 + pos.Column );
+            //PictureBox pictureBox = (PictureBox)sender;
+            //var img = pictureBox.Image;
+            //if( img == null ) return;
+            //TableLayoutPanelCellPosition pos = openPanel.GetCellPosition( pictureBox );
+            //DraggingSegment = Queue.OpenedSegments[pos.Row * 12 + pos.Column];
+            //Queue.OpenedSegments.RemoveAt( pos.Row * 12 + pos.Column );
 
-            if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
-                RedrawOpenPanel();
-            } else {
-                Queue.OpenedSegments.Add( DraggingSegment );
-                RedrawOpenPanel();
-            }
+            //if( DoDragDrop( img, DragDropEffects.Move ) == DragDropEffects.Move ) {
+            //    redrawOpenPanel();
+            //} else {
+            //    Queue.OpenedSegments.Add( DraggingSegment );
+            //    redrawOpenPanel();
+            //}
         }
 
-        public void RedrawOpenPanel()
+        private void redrawOpenPanel()
         {
-            for( int i = 0; i < openPanel.RowCount; i++ ) {
-                for( int j = 0; j < openPanel.ColumnCount; j++ ) {
-                    PictureBox pictureBox = (PictureBox)openPanel.GetControlFromPosition( j, i );
-                    int m = i * 12 + j;
-                    if( m < Queue.OpenedSegments.Count ) {
-                        pictureBox.Image = Queue.OpenedSegments[m].Image;
-                    } else {
-                        pictureBox.Image = null;
-                    }
+            //for( int i = 0; i < openPanel.RowCount; i++ ) {
+            //    for( int j = 0; j < openPanel.ColumnCount; j++ ) {
+            //        PictureBox pictureBox = (PictureBox)openPanel.GetControlFromPosition( j, i );
+            //        int m = i * 12 + j;
+            //        if( m < Queue.OpenedSegments.Count ) {
+            //            pictureBox.Image = Queue.OpenedSegments[m].Image;
+            //        } else {
+            //            pictureBox.Image = null;
+            //        }
+            //    }
+            //}
+        }
+
+        private async void startButton_Click( object sender, EventArgs e )
+        {
+            connection = new ServerConnection();
+            connection.Start();
+            if( connection.IsConnected ) {
+                LobbyDialog lobbyDialog = new LobbyDialog( connection );
+                lobbyDialog.Owner = this;
+                Task<int> lobbyTask = connection.QueryLobby( lobbyDialog );
+                lobbyDialog.ShowDialog();
+                await lobbyTask;
+                lobbyDialog.Close();
+                if( lobbyTask.Result == 0 ) {
+                    this.menuPanel.Visible = false;
+                    this.constructorPanel.Visible = true;
                 }
             }
-        }
-
-        private void startButton_Click( object sender, EventArgs e )
-        {
-            this.menuPanel.Visible = false;
-            this.constructorPanel.Visible = true;
         }
 
         private void exitButton_Click( object sender, EventArgs e )
@@ -271,15 +255,5 @@ namespace GalaxyTruckerClient
                 new CardsView( Cards3 ).ShowDialog();
             }
         }
-
-
-        SpaceshipSegment DraggingSegment { get; set; }
-        SpaceshipSegment CurrentSegment { get; set; }
-        SpaceshipSegment[] StoreSegments { get; set; }
-        Spaceship Ship { get; set; }
-        SpaceshipConstructionQueue Queue { get; set; }
-        List<Card> Cards1 { get; set; }
-        List<Card> Cards2 { get; set; }
-        List<Card> Cards3 { get; set; }
     }
 }

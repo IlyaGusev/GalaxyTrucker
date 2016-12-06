@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GalaxyTruckerClient
 {
-    class SpaceshipSegment
+    public class SpaceshipSegment
     {
         public enum TType { Engine, DoubleEngine, Blaster, DoubleBlaster, Cabin, Hold, Batteries,
             Structure, DangerousHold, BrownCabin, PurpleCabin, Shield };
@@ -51,6 +51,11 @@ namespace GalaxyTruckerClient
             Capacity = Convert.ToInt32( numbers[5] );
             IsMain = Convert.ToBoolean( Convert.ToInt32( numbers[6] ) );
             Image = (System.Drawing.Bitmap)Properties.Resources.ResourceManager.GetObject( st );
+        }
+
+        public string CustomToString()
+        {
+            return Type.ToString() + MainDirection.ToString() + SocketUp.ToString();
         }
 
         public Tuple<TSocket, TSocket> CalculateSockets( SpaceshipSegment other, TDirection direction )
