@@ -84,9 +84,11 @@ namespace GalaxyTruckerClient
         {
             if( queuePictureBox.Image == null ) {
                 string elem = connection.GetSegment();
-                //CurrentSegment = connection.GetSegment();
-                //queuePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                //queuePictureBox.Image = CurrentSegment.Image;
+                if( elem != "Empty" ) {
+                    CurrentSegment = new SpaceshipSegment( elem );
+                    queuePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    queuePictureBox.Image = CurrentSegment.Image;
+                }
             } 
         }
 

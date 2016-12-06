@@ -36,8 +36,8 @@ namespace GalaxyTruckerClient
                         
                         break;
                     }
-                    send( serverConnection, "IsLobbyReady\r\n" );
-                    if( read( serverConnection ) == "Yes\r\n" ) {
+                    send( "IsLobbyReady" );
+                    if( read() == "Yes" ) {
                         result = 0;
                         lobbyDialog.Invoke( new Action( () => {
                             lobbyDialog.Close();
@@ -64,8 +64,8 @@ namespace GalaxyTruckerClient
             if( !this.IsConnected ) {
                 return "";
             }
-            send( serverConnection, "GetSegment\r\n" );
-            return read( serverConnection );
+            send( "GetSegment" );
+            return read();
         }
 
         public bool IsConnected
@@ -92,22 +92,26 @@ namespace GalaxyTruckerClient
             }
         }
 
-        private void send( TcpClient client, string str )
+        private void send( string str )
         {
-            byte[] Buffer = Encoding.ASCII.GetBytes( str );
-            client.GetStream().Write( Buffer, 0, Buffer.Length );
+            if( IsConnected ) {
+                byte[] Buffer = Encoding.ASCII.GetBytes( str );
+                serverConnection.GetStream().Write( Buffer, 0, Buffer.Length );
+            }
         }
 
-        private string read( TcpClient client )
+        private string read()
         {
+
             string request = "";
-            byte[] buffer = new byte[1024];
-            int count;
-            while( ( count = client.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
-                request += Encoding.ASCII.GetString( buffer, 0, count );
-                if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
-                    break;
+            try {
+                if( IsConnected ) {
+                    byte[] buffer = new byte[1024];
+                    int count = serverConnection.GetStream().Read( buffer, 0, buffer.Length );
+                    request += Encoding.ASCII.GetString( buffer, 0, count );
                 }
+            } catch {
+                return request;
             }
             return request;
         }

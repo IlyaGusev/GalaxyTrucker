@@ -9,17 +9,17 @@ namespace GalaxyTruckerServer
 {
     class SpaceshipConstructionQueue
     {
-        public SpaceshipConstructionQueue( List<SpaceshipSegment> _closedQueueOfSegments )
+        public SpaceshipConstructionQueue( List<string> _closedQueueOfSegments )
         {
             ClosedQueueOfSegments = _closedQueueOfSegments;
-            OpenedSegments = new List<SpaceshipSegment>();
+            OpenedSegments = new List<string>();
         }
 
-        public SpaceshipSegment Get()
+        public string Get()
         {
             var rnd = new Random();
-            ClosedQueueOfSegments = new List<SpaceshipSegment>( ClosedQueueOfSegments.OrderBy( item => rnd.Next() ) );
-            SpaceshipSegment res = ClosedQueueOfSegments[0];
+            ClosedQueueOfSegments = new List<string>( ClosedQueueOfSegments.OrderBy( item => rnd.Next() ) );
+            string res = ClosedQueueOfSegments[0];
             ClosedQueueOfSegments.RemoveAt( 0 );
             return res;
         }
@@ -29,7 +29,7 @@ namespace GalaxyTruckerServer
             return ClosedQueueOfSegments.Count;
         }
 
-        public List<SpaceshipSegment> ClosedQueueOfSegments;
-        public List<SpaceshipSegment> OpenedSegments;
+        public List<string> ClosedQueueOfSegments;
+        public List<string> OpenedSegments;
     }
 }

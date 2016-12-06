@@ -58,6 +58,7 @@ namespace GalaxyTruckerServer
             int Port = 8000;
             List<ClientInfo> clients = new List<ClientInfo>();
             GameState state = new GameState();
+            TcpListener listener;
             public Server( int _port )
             {
                 Port = _port;
@@ -65,68 +66,95 @@ namespace GalaxyTruckerServer
 
             public void Start()
             {
-                TcpListener listener = new TcpListener( IPAddress.Any, Port );
+                listener = new TcpListener( IPAddress.Any, Port );
                 listener.Start();
+                loop();
+            }
+
+            private void loop()
+            {
                 int counter = 0;
                 while( true ) {
                     if( listener.Pending() ) {
-                        TcpClient client = listener.AcceptTcpClient();
+                        TcpClient connection = listener.AcceptTcpClient();
                         counter += 1;
-                        clients.Add( new ClientInfo( client, "Player " + counter.ToString() ) );
+                        ClientInfo client = new ClientInfo( connection, "Player " + counter.ToString() );
+                        clients.Add( client );
+                        logConnect( client );
                     }
 
                     List<int> toBeRemoved = new List<int>();
                     foreach( ClientInfo client in clients ) {
                         if( !client.IsConnected ) {
-                           toBeRemoved.Add( clients.IndexOf( client ) );
+                            toBeRemoved.Add( clients.IndexOf( client ) );
+                            logDisconnect( client );
                         }
                     }
-                    foreach( int index in toBeRemoved ) {
-                        clients.RemoveAt( index );
-                    }
+                    clients.RemoveAll( x => toBeRemoved.IndexOf( clients.IndexOf( x ) ) != -1 );
 
                     foreach( ClientInfo client in clients ) {
-                        string request = read( client.Connection );
+                        string request = recieve( client );
                         if( !request.Equals( "" ) ) {
-                            Console.WriteLine( "[Server] " + client.Name + " wrote: '{0}'", request );
-                            if( request == "IsLobbyReady\r\n" ) {
-                                if( clients.Count == 1 ) {
-                                    string answer = "Yes\r\n";
-                                    Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
-                                    send( client.Connection, answer );
+                            logRecieve( client, request );
+                            if( request == "IsLobbyReady" ) {
+                                if( clients.Count == 2 ) {
+                                    send( client, "Yes" );
                                 } else {
-                                    string answer = "No\r\n";
-                                    Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
-                                    send( client.Connection, answer );
+                                    send( client, "No" );
                                 }
-                            } else if( request == "GetSegment\r\n" ) {
-                                string answer = state.Queue.Get().CustomToString() + "\r\n";
-                                Console.WriteLine( "[Server] Sent to " + client.Name + " : '{0}'", answer );
-                                send( client.Connection, answer );
+                            } else if( request == "GetSegment" ) {
+                                if( state.Queue.Count() != 0 ) {
+                                    send( client, state.Queue.Get() );
+                                } else {
+                                    send( client, "Empty" );
+                                }
                             }
                         }
-                        
+
                     }
                     Thread.Sleep( 20 );
                 }
             }
 
-            private void send( TcpClient client, string str )
+            private void logSend( ClientInfo client, string message )
             {
-                byte[] Buffer = Encoding.ASCII.GetBytes( str );
-                client.GetStream().Write( Buffer, 0, Buffer.Length );
+                Console.WriteLine( "To " + client.Name + " : '{0}'", message);
+            }
+            private void logRecieve( ClientInfo client, string message )
+            {
+                Console.WriteLine( "From " + client.Name + " : '{0}'", message );
             }
 
-            private string read( TcpClient client )
+            private void logConnect( ClientInfo client )
+            {
+                Console.WriteLine( client.Name + " connected" );
+            }
+
+            private void logDisconnect( ClientInfo client )
+            {
+                Console.WriteLine( client.Name + " disconnected" );
+            }
+
+            private void send( ClientInfo client, string str )
+            {
+                if( client.IsConnected ) {
+                    byte[] Buffer = Encoding.ASCII.GetBytes( str );
+                    client.Connection.GetStream().Write( Buffer, 0, Buffer.Length );
+                    logSend( client,str );
+                }
+            }
+
+            private string recieve( ClientInfo client )
             {
                 string request = "";
-                byte[] buffer = new byte[1024];
-                int count;
-                while( ( count = client.GetStream().Read( buffer, 0, buffer.Length ) ) > 0 ) {
-                    request += Encoding.ASCII.GetString( buffer, 0, count );
-                    if( request.IndexOf( "\r\n" ) >= 0 || request.Length > 4096 ) {
-                        break;
+                try {
+                    if( client.IsConnected && client.Connection.GetStream().DataAvailable ) {
+                        byte[] buffer = new byte[1024];
+                        int count = client.Connection.GetStream().Read( buffer, 0, buffer.Length );
+                        request += Encoding.ASCII.GetString( buffer, 0, count );
                     }
+                } catch {
+                    return request;
                 }
                 return request;
             }

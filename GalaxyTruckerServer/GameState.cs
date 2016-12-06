@@ -14,11 +14,9 @@ namespace GalaxyTruckerServer
         public SpaceshipConstructionQueue Queue { get; set; }
         public GameState()
         {
-            Queue = new SpaceshipConstructionQueue( new List<SpaceshipSegment>{
-                new SpaceshipSegment("Blaster0001000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Engine2300000"), new SpaceshipSegment("Cabin0323220"),
-                new SpaceshipSegment("Hold0000220"),  new SpaceshipSegment("Engine2300000"),
-                new SpaceshipSegment("Blaster0001000")} );
+            Queue = new SpaceshipConstructionQueue( new List<string>{
+                "Blaster0001000", "Cabin0323220","Engine2300000", "Cabin0323220",
+                "Hold0000220",  "Engine2300000", "Blaster0001000"} );
         }
     }
 }

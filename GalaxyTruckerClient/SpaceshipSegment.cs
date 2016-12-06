@@ -53,11 +53,6 @@ namespace GalaxyTruckerClient
             Image = (System.Drawing.Bitmap)Properties.Resources.ResourceManager.GetObject( st );
         }
 
-        public string CustomToString()
-        {
-            return Type.ToString() + MainDirection.ToString() + SocketUp.ToString();
-        }
-
         public Tuple<TSocket, TSocket> CalculateSockets( SpaceshipSegment other, TDirection direction )
         {
             TSocket socket1 = this.SocketUp;
