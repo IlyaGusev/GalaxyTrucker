@@ -12,6 +12,7 @@ namespace GalaxyTruckerClient
     {
         TcpClient serverConnection;
         CancellationTokenSource cancelTokenSource;
+        List<string> buffer = new List<string>();
 
         public void Start()
         {
@@ -54,18 +55,65 @@ namespace GalaxyTruckerClient
             }, token);
         }
 
+        public void BackgroundLoop()
+        {
+            Task.Run( () => {
+                while( true ) {
+                    if( !this.IsConnected ) {
+                        break;
+                    }
+                    string message = read();
+                    if( !message.Equals( "" ) ) {
+                        buffer.Add( message );
+                    }
+                    Thread.Sleep( 100 );
+                }
+            });
+        }
+
+        public Task<string> ListenForMessages( string[] messages )
+        {
+            return Task.Run( () => {
+                while( true ) {
+                    if( buffer.Count != 0 ) {
+                        for( int i = 0; i < buffer.Count; i++ ) {
+                            foreach( string message in messages ) {
+                                if( buffer[i].IndexOf( message ) != -1 ) {
+                                    string temp = buffer[i];
+                                    buffer.RemoveAt( i );
+                                    return temp;
+                                }
+                            }
+                            
+                        }
+                    }
+                    Thread.Sleep( 100 );
+                }
+            } );
+        }
+
         public void CancelLobby()
         {
             cancelTokenSource.Cancel();
         }
 
-        public string GetSegment()
+        public Task<string> GetSegment()
         {
             if( !this.IsConnected ) {
-                return "";
+                return new Task<string>(() => "");
             }
             send( "GetSegment" );
-            return read();
+            return ListenForMessages( new string[] { "Segment", "Empty" } );
+        }
+
+        public void SendOpenSegment( string segment )
+        {
+            send( "OpenAdd:" + segment );
+        }
+
+        public void RemoveOpenSegment( string segment )
+        {
+            send( "OpenRemove:" + segment );
         }
 
         public bool IsConnected

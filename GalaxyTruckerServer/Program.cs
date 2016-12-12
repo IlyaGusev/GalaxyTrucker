@@ -97,16 +97,20 @@ namespace GalaxyTruckerServer
                         if( !request.Equals( "" ) ) {
                             logRecieve( client, request );
                             if( request == "IsLobbyReady" ) {
-                                if( clients.Count == 2 ) {
+                                if( clients.Count == 1 ) {
                                     send( client, "Yes" );
                                 } else {
                                     send( client, "No" );
                                 }
                             } else if( request == "GetSegment" ) {
                                 if( state.Queue.Count() != 0 ) {
-                                    send( client, state.Queue.Get() );
+                                    send( client, "Segment:" + state.Queue.Get() );
                                 } else {
                                     send( client, "Empty" );
+                                }
+                            } else if( request.IndexOf("Open") != -1  ) {
+                                foreach( ClientInfo cl in clients ) {
+                                    send( cl, request );
                                 }
                             }
                         }

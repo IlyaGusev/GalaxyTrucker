@@ -13,6 +13,18 @@ namespace GalaxyTruckerClient
         public enum TSocket { No, Unary, Binary, Universal }
         public enum TDirection { Up, Right, Down, Left }
 
+        public TType Type { get; set; }
+        public TDirection MainDirection { get; set; }
+        public TSocket SocketUp { get; set; }
+        public TSocket SocketRight { get; set; }
+        public TSocket SocketDown { get; set; }
+        public TSocket SocketLeft { get; set; }
+        public int Capacity { get; set; }
+        public int Current { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsMain { get; set; }
+        public System.Drawing.Bitmap Image { get; set; }
+
         public SpaceshipSegment( TType _type, TDirection _mainDirection, TSocket _socketUp, TSocket _socketRight, 
             TSocket _socketDown, TSocket _socketLeft, int _capacity = 0, int _current = 0, bool _isMain = false )
         {
@@ -48,9 +60,16 @@ namespace GalaxyTruckerClient
             SocketRight = (TSocket)Enum.Parse( typeof( TSocket ), "" + numbers[2] );
             SocketDown = (TSocket)Enum.Parse( typeof( TSocket ), "" + numbers[3] );
             SocketLeft = (TSocket)Enum.Parse( typeof( TSocket ), "" + numbers[4] );
-            Capacity = Convert.ToInt32( numbers[5] );
-            IsMain = Convert.ToBoolean( Convert.ToInt32( numbers[6] ) );
+            Capacity = Int32.Parse( numbers[5].ToString() );
+            IsMain = numbers[6] == '1' ? true : false;
             Image = (System.Drawing.Bitmap)Properties.Resources.ResourceManager.GetObject( st );
+        }
+
+        public string Serialize()
+        {
+            return Type.ToString() + MainDirection.ToString( "d" ) + SocketUp.ToString( "d" ) + 
+                SocketRight.ToString( "d" ) + SocketDown.ToString( "d" ) + SocketLeft.ToString( "d" ) + 
+                Capacity.ToString() + (IsMain ? "1" : "0");
         }
 
         public Tuple<TSocket, TSocket> CalculateSockets( SpaceshipSegment other, TDirection direction )
@@ -94,16 +113,12 @@ namespace GalaxyTruckerClient
                 socket2 != SpaceshipSegment.TSocket.No;
         }
 
-        public TType Type { get; set; }
-        public TDirection MainDirection { get; set; }
-        public TSocket SocketUp { get; set; }
-        public TSocket SocketRight { get; set; }
-        public TSocket SocketDown { get; set; }
-        public TSocket SocketLeft { get; set; }
-        public int Capacity { get; set; }
-        public int Current { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsMain { get; set; }
-        public System.Drawing.Bitmap Image { get; set; }
+        public bool Equals(SpaceshipSegment other )
+        {
+            return other.Type == Type && other.MainDirection == MainDirection &&
+                other.SocketDown == SocketDown && other.SocketLeft == SocketLeft &&
+                other.SocketRight == SocketRight && other.SocketUp == SocketUp &&
+                other.Capacity == Capacity && other.IsMain == IsMain;
+        }
     }
 }
