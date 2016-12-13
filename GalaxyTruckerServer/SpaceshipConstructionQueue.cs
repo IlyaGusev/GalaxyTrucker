@@ -17,7 +17,7 @@ namespace GalaxyTruckerServer
 
         public string Get()
         {
-            var rnd = new Random();
+            var rnd = new Random( Convert.ToInt32( DateTime.Now ) );
             ClosedQueueOfSegments = new List<string>( ClosedQueueOfSegments.OrderBy( item => rnd.Next() ) );
             string res = ClosedQueueOfSegments[0];
             ClosedQueueOfSegments.RemoveAt( 0 );

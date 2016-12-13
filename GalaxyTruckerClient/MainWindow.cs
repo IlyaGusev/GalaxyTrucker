@@ -19,9 +19,6 @@ namespace GalaxyTruckerClient
         SpaceshipSegment CurrentSegment { get; set; }
         SpaceshipSegment[] StoreSegments { get; set; }
         Spaceship Ship { get; set; }
-        List<Card> Cards1 { get; set; }
-        List<Card> Cards2 { get; set; }
-        List<Card> Cards3 { get; set; }
         ServerConnection connection { get; set; }
         List<SpaceshipSegment> openedSegments { get; set; }
 
@@ -75,10 +72,6 @@ namespace GalaxyTruckerClient
                     pictureBox.MouseDown += openPanelPictureBox_MouseDown;
                 }
             }
-
-            Cards1 = new List<Card> { new OpenSpaceCard(), new PlanetsCard("00;01;11;2") };
-            Cards2 = new List<Card>();
-            Cards3 = new List<Card>();
 
             openedSegments = new List<SpaceshipSegment>();
         }
@@ -271,11 +264,11 @@ namespace GalaxyTruckerClient
         {
             Button btn = (Button)sender;
             if( btn.Name == "cardsButton1" ) {
-                new CardsView( Cards1 ).ShowDialog();
+
             } else if( btn.Name == "cardsButton2" ) {
-                new CardsView( Cards2 ).ShowDialog();
+
             } else if( btn.Name == "cardsButton3" ) {
-                new CardsView( Cards3 ).ShowDialog();
+
             }
         }
     }

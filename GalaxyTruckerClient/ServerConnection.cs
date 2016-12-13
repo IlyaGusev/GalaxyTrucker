@@ -116,6 +116,15 @@ namespace GalaxyTruckerClient
             send( "OpenRemove:" + segment );
         }
 
+        public Task<string> GetCards( int collection )
+        {
+            if( !this.IsConnected ) {
+                return new Task<string>( () => "" );
+            }
+            send( "GetCards:" + collection.ToString() );
+            return ListenForMessages( new string[] { "Cards", "EmptyCards" } );
+        }
+
         public bool IsConnected
         {
             get

@@ -14,28 +14,46 @@ namespace GalaxyTruckerClient
         public enum TDirection { Up, Right, Down, Left }
     }
 
-    class OpenSpaceCard: Card
+    public class OpenSpaceCard : Card
     {
 
     }
 
-    class EpedemyCard: Card
+    public class EpedemyCard : Card
     {
 
     }
 
-    class DustCard: Card
+    public class DustCard : Card
     {
 
     }
 
-    class DamageCard: Card
+    public class DamageCard : Card
     {
+        public DamageCard( string st )
+        {
+            if( st[0] == 'b' ) {
+                List<string> booms = new List<string>( st.Split( ';' ) );
+                booms = booms.GetRange( 1, booms.Count - 1 );
+                foreach( string boom in booms ) {
+                    Booms.Add( new Tuple<TAsteroids, TDirection>( (TAsteroids)Int32.Parse( boom[0].ToString() ), 
+                        (TDirection)Int32.Parse( boom[1].ToString() ) ) );
+                }
+            } else if( st[0] == 'a' ) {
+                List<string> asteroids = new List<string>( st.Split( ';' ) );
+                asteroids = asteroids.GetRange( 1, asteroids.Count - 1 );
+                foreach( string asteroid in asteroids ) {
+                    Booms.Add( new Tuple<TAsteroids, TDirection>( (TAsteroids)Int32.Parse( asteroid[0].ToString() ),
+                        (TDirection)Int32.Parse( asteroid[1].ToString() ) ) );
+                }
+            }
+        }
         public TupleList<TAsteroids, TDirection> Asteroids { get; set; }
         public TupleList<TAsteroids, TDirection> Booms { get; set; }
     }
 
-    class PlanetsCard: Card
+    public class PlanetsCard : Card
     {
         public PlanetsCard( List<List<TCargo>> _planets, int _costMovement )
         {
@@ -49,7 +67,7 @@ namespace GalaxyTruckerClient
             for( int i = 0; i < planetsAndCost.Count - 1; i++ ) {
                 List<TCargo> planet = new List<TCargo>();
                 foreach( char ch in planetsAndCost[i] ) {
-                    planet.Add( (TCargo)Convert.ToInt32( ch ) );
+                    planet.Add( (TCargo)Int32.Parse( ch.ToString() ) );
                 }
             }
             CostMovement = Convert.ToInt32( planetsAndCost[planetsAndCost.Count - 1] );
@@ -58,7 +76,7 @@ namespace GalaxyTruckerClient
         public int CostMovement { get; set; }
     }
 
-    class CompareCard: Card
+    public class CompareCard : Card
     {
         public enum TComparing {Engine, Weapon, Crew}
         public List<TComparing> Comparings { get; set; }
@@ -67,7 +85,7 @@ namespace GalaxyTruckerClient
         public List<int> PenaltyMovement { get; set; }
     }
 
-    class RequirementsCard: Card
+    public class RequirementsCard : Card
     {
         public int RequireEnginePower { get; set; }
         public int RequireWeaponPower { get; set; }

@@ -112,6 +112,9 @@ namespace GalaxyTruckerServer
                                 foreach( ClientInfo cl in clients ) {
                                     send( cl, request );
                                 }
+                            } else if( request.IndexOf( "GetCards" ) != -1 ) {
+                                string collection = request.Split( ':' )[1];
+
                             }
                         }
 
