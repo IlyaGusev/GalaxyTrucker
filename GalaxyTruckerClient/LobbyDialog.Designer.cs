@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LobbyDialog));
             this.playersLabel = new System.Windows.Forms.Label();
             this.numberLabel = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -68,6 +69,7 @@
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.numberLabel);
             this.Controls.Add(this.playersLabel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LobbyDialog";
             this.Text = "Searching for players...";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LobbyDialog_FormClosed);

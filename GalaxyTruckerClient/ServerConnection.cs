@@ -122,7 +122,16 @@ namespace GalaxyTruckerClient
                 return new Task<string>( () => "" );
             }
             send( "GetCards:" + collection.ToString() );
-            return ListenForMessages( new string[] { "Cards", "EmptyCards" } );
+            return ListenForMessages( new string[] { "Cards" } );
+        }
+
+        public bool SendReady()
+        {
+            if( !this.IsConnected ) {
+                return false;
+            }
+            send( "Ready" );
+            return true;
         }
 
         public bool IsConnected

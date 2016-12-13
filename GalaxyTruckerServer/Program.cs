@@ -96,13 +96,13 @@ namespace GalaxyTruckerServer
                         string request = recieve( client );
                         if( !request.Equals( "" ) ) {
                             logRecieve( client, request );
-                            if( request == "IsLobbyReady" ) {
-                                if( clients.Count == 1 ) {
+                            if( request.Equals( "IsLobbyReady" ) ) {
+                                if( clients.Count == 2 ) {
                                     send( client, "Yes" );
                                 } else {
                                     send( client, "No" );
                                 }
-                            } else if( request == "GetSegment" ) {
+                            } else if( request.Equals( "GetSegment" ) ) {
                                 if( state.Queue.Count() != 0 ) {
                                     send( client, "Segment:" + state.Queue.Get() );
                                 } else {
@@ -113,8 +113,16 @@ namespace GalaxyTruckerServer
                                     send( cl, request );
                                 }
                             } else if( request.IndexOf( "GetCards" ) != -1 ) {
-                                string collection = request.Split( ':' )[1];
-
+                                int collection = Int32.Parse( request.Split( ':' )[1].ToString() ) - 1;
+                                string response = "Cards#";
+                                foreach( string card in state.CardCollelctions[collection] ) {
+                                    response += card + "@";
+                                }
+                                response = response.Substring( 0, response.Length - 1 );
+                                send( client, response );
+                            } else if( request.Equals( "Ready" ) ) {
+                                state.PlayersPositions.Add( 
+                                    new Tuple<int, string>( -( state.PlayersPositions.Count * 2 ), client.Name ) );
                             }
                         }
 

@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CardsView));
             this.cardsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SuspendLayout();
             // 
@@ -51,6 +52,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(625, 258);
             this.Controls.Add(this.cardsPanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CardsView";
             this.Text = "CardsView";
             this.ResumeLayout(false);

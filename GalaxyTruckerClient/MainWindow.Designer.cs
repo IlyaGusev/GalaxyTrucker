@@ -29,6 +29,8 @@ namespace GalaxyTruckerClient
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnGetSegment = new System.Windows.Forms.Button();
             this.queuePictureBox = new System.Windows.Forms.PictureBox();
@@ -51,6 +53,9 @@ namespace GalaxyTruckerClient
             this.exitButton = new System.Windows.Forms.Button();
             this.configureButton = new System.Windows.Forms.Button();
             this.startButton = new System.Windows.Forms.Button();
+            this.timerOfConstructionPhase = new System.Windows.Forms.Timer(this.components);
+            this.timeLabel = new System.Windows.Forms.Label();
+            this.readyButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.queuePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.storePictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.storePictureBox2)).BeginInit();
@@ -73,7 +78,7 @@ namespace GalaxyTruckerClient
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(39, 25);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
@@ -145,7 +150,7 @@ namespace GalaxyTruckerClient
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.openPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             this.openPanel.Location = new System.Drawing.Point(575, 25);
             this.openPanel.Name = "openPanel";
             this.openPanel.RowCount = 12;
@@ -242,6 +247,8 @@ namespace GalaxyTruckerClient
             // 
             // constructorPanel
             // 
+            this.constructorPanel.Controls.Add(this.readyButton);
+            this.constructorPanel.Controls.Add(this.timeLabel);
             this.constructorPanel.Controls.Add(this.cardsButton3);
             this.constructorPanel.Controls.Add(this.cardsButton2);
             this.constructorPanel.Controls.Add(this.cardsButton1);
@@ -257,7 +264,7 @@ namespace GalaxyTruckerClient
             this.constructorPanel.Controls.Add(this.storePictureBox1);
             this.constructorPanel.Location = new System.Drawing.Point(12, 12);
             this.constructorPanel.Name = "constructorPanel";
-            this.constructorPanel.Size = new System.Drawing.Size(1240, 777);
+            this.constructorPanel.Size = new System.Drawing.Size(1240, 800);
             this.constructorPanel.TabIndex = 10;
             this.constructorPanel.Visible = false;
             // 
@@ -327,14 +334,40 @@ namespace GalaxyTruckerClient
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
+            // timerOfConstructionPhase
+            // 
+            this.timerOfConstructionPhase.Interval = 1000;
+            this.timerOfConstructionPhase.Tick += new System.EventHandler(this.timerOfConstructionPhase_Tick);
+            // 
+            // timeLabel
+            // 
+            this.timeLabel.AutoSize = true;
+            this.timeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.timeLabel.Location = new System.Drawing.Point(510, 733);
+            this.timeLabel.Name = "timeLabel";
+            this.timeLabel.Size = new System.Drawing.Size(198, 24);
+            this.timeLabel.TabIndex = 13;
+            this.timeLabel.Text = "Time left: 120 seconds";
+            // 
+            // readyButton
+            // 
+            this.readyButton.Location = new System.Drawing.Point(566, 760);
+            this.readyButton.Name = "readyButton";
+            this.readyButton.Size = new System.Drawing.Size(75, 23);
+            this.readyButton.TabIndex = 14;
+            this.readyButton.Text = "Ready!";
+            this.readyButton.UseVisualStyleBackColor = true;
+            this.readyButton.Click += new System.EventHandler(this.readyButton_Click);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 801);
+            this.ClientSize = new System.Drawing.Size(1264, 824);
             this.Controls.Add(this.menuPanel);
             this.Controls.Add(this.constructorPanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Text = "Galaxy Trucker";
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainWindow_DragEnter);
@@ -374,6 +407,9 @@ namespace GalaxyTruckerClient
         private System.Windows.Forms.Button cardsButton3;
         private System.Windows.Forms.Button cardsButton2;
         private System.Windows.Forms.Button cardsButton1;
+        private System.Windows.Forms.Timer timerOfConstructionPhase;
+        private System.Windows.Forms.Label timeLabel;
+        private System.Windows.Forms.Button readyButton;
     }
 }
 

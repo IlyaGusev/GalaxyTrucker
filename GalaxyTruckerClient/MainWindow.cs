@@ -21,9 +21,15 @@ namespace GalaxyTruckerClient
         Spaceship Ship { get; set; }
         ServerConnection connection { get; set; }
         List<SpaceshipSegment> openedSegments { get; set; }
+        bool isReady = false;
+        int timeLeft = 120;
 
         public MainWindow()
         {
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
 
             queuePictureBox.MouseDown += queuePictureBox_MouseDown;
@@ -76,9 +82,35 @@ namespace GalaxyTruckerClient
             openedSegments = new List<SpaceshipSegment>();
         }
 
+        private async void startButton_Click( object sender, EventArgs e )
+        {
+            connection = new ServerConnection();
+            connection.Start();
+            if( connection.IsConnected ) {
+                LobbyDialog lobbyDialog = new LobbyDialog( connection );
+                lobbyDialog.Owner = this;
+                Task<int> lobbyTask = connection.QueryLobby( lobbyDialog );
+                lobbyDialog.ShowDialog();
+                await lobbyTask;
+                lobbyDialog.Close();
+                if( lobbyTask.Result == 0 ) {
+                    this.menuPanel.Visible = false;
+                    this.constructorPanel.Visible = true;
+                    connection.BackgroundLoop();
+                    listenOpenPanel();
+                    timerOfConstructionPhase.Start();
+                }
+            }
+        }
+
+        private void exitButton_Click( object sender, EventArgs e )
+        {
+            Application.Exit();
+        }
+
         private async void btnGetSegment_Click( object sender, EventArgs e )
         {
-            if( queuePictureBox.Image == null ) {
+            if( queuePictureBox.Image == null && !isReady ) {
                 Task<string> taskMessage = connection.GetSegment();
                 await taskMessage;
                 if( !taskMessage.Result.Equals( "Empty" ) ) {
@@ -109,7 +141,7 @@ namespace GalaxyTruckerClient
             PictureBox pictureBox = (PictureBox)sender;
             TableLayoutPanelCellPosition pos = tableLayoutPanel1.GetCellPosition( pictureBox );
             if( e.Data.GetDataPresent( DataFormats.Bitmap ) && 
-                Ship.CanAddSegment( DraggingSegment, pos.Row, pos.Column ) ) {
+                Ship.CanAddSegment( DraggingSegment, pos.Row, pos.Column ) && !isReady ) {
                 e.Effect = DragDropEffects.Move;
             } else {
                 e.Effect = DragDropEffects.None;
@@ -131,7 +163,7 @@ namespace GalaxyTruckerClient
         {
             PictureBox pictureBox = (PictureBox)sender;
             if( e.Data.GetDataPresent( DataFormats.Bitmap ) && pictureBox.Image == null &&
-                ( StoreSegments[0] == null || StoreSegments[1] == null ) ) 
+                ( StoreSegments[0] == null || StoreSegments[1] == null ) && !isReady ) 
             {
                 e.Effect = DragDropEffects.Move;
             } else {
@@ -174,7 +206,7 @@ namespace GalaxyTruckerClient
 
         private void openPanel_DragEnter( object sender, DragEventArgs e )
         {
-            if( e.Data.GetDataPresent( DataFormats.Bitmap ) ) {
+            if( e.Data.GetDataPresent( DataFormats.Bitmap ) && !isReady ) {
                 e.Effect = DragDropEffects.Move;
             } else {
                 e.Effect = DragDropEffects.None;
@@ -190,7 +222,7 @@ namespace GalaxyTruckerClient
         {
             PictureBox pictureBox = (PictureBox)sender;
             var img = pictureBox.Image;
-            if( img == null ) return;
+            if( img == null || isReady ) return;
             TableLayoutPanelCellPosition pos = openPanel.GetCellPosition( pictureBox );
             DraggingSegment = openedSegments[pos.Row * 12 + pos.Column];
             connection.RemoveOpenSegment( DraggingSegment.Serialize() );
@@ -235,40 +267,57 @@ namespace GalaxyTruckerClient
             }
         }
 
-        private async void startButton_Click( object sender, EventArgs e )
+        private async void cardsButton_Click( object sender, EventArgs e )
         {
-            connection = new ServerConnection();
-            connection.Start();
-            if( connection.IsConnected ) {
-                LobbyDialog lobbyDialog = new LobbyDialog( connection );
-                lobbyDialog.Owner = this;
-                Task<int> lobbyTask = connection.QueryLobby( lobbyDialog );
-                lobbyDialog.ShowDialog();
-                await lobbyTask;
-                lobbyDialog.Close();
-                if( lobbyTask.Result == 0 ) {
-                    this.menuPanel.Visible = false;
-                    this.constructorPanel.Visible = true;
-                    connection.BackgroundLoop();
-                    listenOpenPanel();
+            if( isReady ) return;
+            Task<string> task;
+            Button btn = (Button)sender;
+            if( btn.Name == "cardsButton1" ) {
+                task = connection.GetCards( 1 );
+            } else if( btn.Name == "cardsButton2" ) {
+                task = connection.GetCards( 2 );
+            } else {
+                task = connection.GetCards( 3 );
+            }
+            await task;
+            string cardsString = task.Result.Split( '#' )[1];
+            List<Card> cards = new List<Card>();
+            foreach( string card in cardsString.Split('@') ) {
+                if( !card.Equals( "" ) ) {
+                    if( card.IndexOf( "OpenSpace" ) != -1 ) {
+                        cards.Add( new OpenSpaceCard() );
+                    }
+                    if( card.IndexOf( "Dust" ) != -1 ) {
+                        cards.Add( new OpenSpaceCard() );
+                    }
+                    if( card.IndexOf( "Planets" ) != -1 ) {
+                        cards.Add( new PlanetsCard( card.Split( ':' )[1] ) );
+                    }
+                    if( card.IndexOf( "Damage" ) != -1 ) {
+                        cards.Add( new DamageCard( card.Split( ':' )[1] ) );
+                    }
                 }
+            }
+            new CardsView( cards ).ShowDialog();
+        }
+
+        private void timerOfConstructionPhase_Tick( object sender, EventArgs e )
+        {
+            if( timeLeft > 0 ) {
+                timeLeft = timeLeft - 1;
+                timeLabel.Text = "Time left: " + timeLeft + " seconds";
+            } else {
+                timerOfConstructionPhase.Stop();
+                timeLabel.Text = "Time's up!";
             }
         }
 
-        private void exitButton_Click( object sender, EventArgs e )
+        private void readyButton_Click( object sender, EventArgs e )
         {
-            Application.Exit();
-        }
-
-        private void cardsButton_Click( object sender, EventArgs e )
-        {
-            Button btn = (Button)sender;
-            if( btn.Name == "cardsButton1" ) {
-
-            } else if( btn.Name == "cardsButton2" ) {
-
-            } else if( btn.Name == "cardsButton3" ) {
-
+            if( connection.SendReady() ) {
+                Button btn = (Button)sender;
+                btn.Enabled = false;
+                isReady = true;
             }
         }
     }
